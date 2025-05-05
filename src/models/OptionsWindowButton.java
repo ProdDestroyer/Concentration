@@ -2,39 +2,28 @@ package models;
 
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.awt.Rectangle;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
-
-public class CustomButton {
+public class OptionsWindowButton {
 
     private Vec2D topLeftCorner;
     private Vec2D dimensions;
-    private BufferedImage buttonImage;
-    private BufferedImage hoveredButtonImage;
-    private AffineTransform at;
     private String text;
     private Font font;
     private boolean fontSizeCalculated;
-    private boolean hovered;
     private Rectangle2D fontRectangle2d;
-    private GameButtonType gameButtonType;
-    private static final String GAME_BUTTON_IMAGE_PATH = "/img/ButtonBackground.png";
-    private static final String GAME_HOVERED_BUTTON_IMAGE_PATH = "/img/HoveredButtonBackground.png";
-    private static final String GAME_BUTTON_FONT_PATH = "/fonts/rebellion-squad-font/RebellionSquad-ZpprZ.ttf";
+    private boolean hovered;
+    private static final String GAME_BUTTON_FONT_PATH = "/fonts/jungle-adventurer/JungleAdventurer.ttf";
 
-    public CustomButton(Vec2D topLeftCorner, Vec2D dimensions, GameButtonType gameButtonType) {
+    public OptionsWindowButton(Vec2D topLeftCorner, Vec2D dimensions, String text) {
         this.topLeftCorner = topLeftCorner;
         this.dimensions = dimensions;
-        this.gameButtonType = gameButtonType;
-        this.text = gameButtonType.getText();
+        this.text = text;
         initFont();
-        initBackgroundImage();
     }
 
     private void initFont() {
@@ -44,26 +33,6 @@ public class CustomButton {
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void initBackgroundImage() {
-        try {
-            buttonImage = ImageIO.read(getClass().getResource(GAME_BUTTON_IMAGE_PATH));
-            hoveredButtonImage = ImageIO.read(getClass().getResource(GAME_HOVERED_BUTTON_IMAGE_PATH));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        float imageWidth = buttonImage.getWidth();
-        float imageHeight = buttonImage.getHeight();
-
-        at = new AffineTransform();
-        at.translate(topLeftCorner.x, topLeftCorner.y);
-        at.scale(dimensions.x / imageWidth, dimensions.y / imageHeight);
-    }
-
-    public boolean isContained(Vec2D coords) {
-        return hovered = coords.x >= topLeftCorner.x && coords.x <= topLeftCorner.x + dimensions.x && coords.y >= topLeftCorner.y && coords.y <= topLeftCorner.y + dimensions.y; 
     }
 
     public Font getFont(FontRenderContext frc) {
@@ -102,12 +71,17 @@ public class CustomButton {
                 buttonYCenter + (ascent - descent) / 2.0f);
     }
 
-    public BufferedImage getButtonImage() {
-        return !hovered ? buttonImage : hoveredButtonImage;
+    public boolean isContained( Vec2D coords) {
+        Rectangle2D buttonRect = new Rectangle((int)topLeftCorner.x, (int)topLeftCorner.y, (int)dimensions.x, (int)dimensions.y);
+        return hovered = buttonRect.contains(coords.x, coords.y);
     }
 
-    public AffineTransform getAt() {
-        return at; 
+    public Rectangle2D getFontRectangle2d() {
+        return fontRectangle2d;
+    }
+
+    public boolean isHovered() {
+        return hovered;
     }
 
     public Vec2D getDimensions() {
@@ -122,22 +96,15 @@ public class CustomButton {
         return topLeftCorner;
     }
 
-    public Rectangle2D getFontRectangle2d() {
-        return fontRectangle2d;
-    }
-
-    public GameButtonType getGameButtonType() {
-        return gameButtonType;
-    }
-
-    public void setDimensions(Vec2D dimensions) {
-        this.dimensions = dimensions;
-        initBackgroundImage();
-        fontSizeCalculated = false;
-    }
-
     public void setTopLeftCorner(Vec2D topLeftCorner) {
         this.topLeftCorner = topLeftCorner;
     }
+    public void setDimensions(Vec2D dimensions) {
+        this.dimensions = dimensions;
+        fontSizeCalculated = false;
+    }
 
+    public void setText(String text) {
+        this.text = text;
+    }
 }

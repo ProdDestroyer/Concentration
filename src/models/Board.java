@@ -71,6 +71,19 @@ public class Board {
         this.cards[cardIndex] = new Card(center, new Vec2D(cardWidth, cardHeight), animalsImagesMap.get(i % 12));
     }
 
+    private void resetCard(int i) {
+        Vec2D coord2D = translateTo2DCoords(i, widthInTiles, heightInTiles);
+
+        int x = (int) coord2D.getX();
+        int y = (int) coord2D.getY();
+        float xCenter = topLeftCorner.getX() + cardWidth / 2.0f + (x * cardWidth);
+        float yCenter = topLeftCorner.getY() + cardHeight / 2.0f + (y * cardHeight);
+
+        Vec2D center = new Vec2D(xCenter, yCenter);
+        cards[i].setCenter(center);
+        cards[i].setDimensions(new Vec2D(cardWidth, cardHeight));
+    }
+
     private Vec2D translateTo2DCoords(int i, int width, int height) {
         return new Vec2D(i % width, i / width);
     }
@@ -162,4 +175,16 @@ public class Board {
         }
     }
 
+    public void setTopLeftCorner(Vec2D topLeftCorner) {
+        this.topLeftCorner = topLeftCorner;
+    }
+    public void setDimensions(Vec2D dimensions) {
+        this.dimensions = dimensions;
+        this.cardWidth = dimensions.getX() / widthInTiles;
+        this.cardHeight = dimensions.getY() / heightInTiles;
+
+        for (int i = 0; i < cards.length; i++) {
+            resetCard(i);
+        }
+    }
 }

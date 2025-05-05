@@ -1,9 +1,16 @@
 package models;
 
 public class Utilities {
-    
-    public static final int WINDOW_WIDTH = 1024;
-    public static final int WINDOW_HEIGHT = 576;
-    // public static final int WINDOW_WIDTH = 1920;
-    // public static final int WINDOW_HEIGHT = 1080;
-} 
+
+    public boolean pendingWindowResize;
+
+    public Vec2D windowDimensions;
+
+    public float windowWidth() {
+        return windowDimensions.x;
+    }
+    public float windowHeight() {
+        return windowDimensions.y;
+    }
+
+}  

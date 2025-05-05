@@ -105,4 +105,13 @@ public class Card {
     public boolean isHovered() {
         return gameImage.isHovered();
     }
+
+    public void setDimensions(Vec2D dimensions) {
+        this.dimensions = dimensions;
+    }
+
+    public void setCenter(Vec2D center) {
+        this.center = center;
+        transform(0.0f);
+    }
 }

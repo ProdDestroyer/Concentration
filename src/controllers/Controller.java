@@ -4,6 +4,9 @@ import javax.swing.SwingUtilities;
 import models.MouseEngine;
 import models.Game;
 import models.TimeStamp;
+import models.Utilities;
+import models.Vec2D;
+
 import java.lang.Thread;
 import views.GameFrame;
 
@@ -11,6 +14,7 @@ public class Controller {
     Game game;
     GameFrame gameFrame;
     MouseEngine mouseEngine;
+    Utilities utilities;
 
     public Controller() {
         initComponents();
@@ -33,8 +37,9 @@ public class Controller {
     }
 
     private void initComponents() {
+        utilities = new Utilities();
         mouseEngine = new MouseEngine();
-        game = new Game(5, mouseEngine);
-        gameFrame = new GameFrame(game, mouseEngine);
+        game = new Game(utilities, mouseEngine);
+        gameFrame = new GameFrame(utilities, game, mouseEngine);
     }
 }
