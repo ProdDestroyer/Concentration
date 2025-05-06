@@ -21,10 +21,12 @@ public class Game {
     private int lastWindowDimensionsPivot;
     public Utilities utilities;
     private boolean movingOptions;
+    private FontObserver fontObserver;
     private static final String GAME_BACKGROUND_PATH = "/img/GameBackground.jpg";
     private static final String BOARD_FRAME_PATH = "/img/FrameImage.png";
 
     public Game(Utilities utilities, MouseEngine mouseEngine) {
+        this.fontObserver = new FontObserver();
         this.utilities = utilities;
         this.windowDimensionsPivot = 2;
         utilities.windowDimensions = windowDimensions[this.windowDimensionsPivot];
@@ -47,7 +49,7 @@ public class Game {
 
         for (int i = 0; i < GameButtonType.values().length - 1; i++) {
             Vec2D topLeftCorner = new Vec2D(gameButtonsStartX, gameButtonsStartY + (i * gameButtonsHeight));
-            this.gameButtons[i] = new CustomButton(topLeftCorner, gameButtonDimensions, GameButtonType.values()[i]);
+            this.gameButtons[i] = new CustomButton(topLeftCorner, gameButtonDimensions, GameButtonType.values()[i], fontObserver);
         }
 
         float optionsWindowWidth = width * 1.5f;
@@ -56,7 +58,7 @@ public class Game {
         Vec2D optionsWindowTopLeftCorner = new Vec2D((utilities.windowWidth() - optionsWindowWidth) / 2.0f,
                 (utilities.windowHeight() - optionsWindowHeight) / 2.0f);
         Vec2D optionsWindowDimensions = new Vec2D(optionsWindowWidth, optionsWindowHeight);
-        optionsWindow = new OptionsWindow(optionsWindowTopLeftCorner, optionsWindowDimensions);
+        optionsWindow = new OptionsWindow(optionsWindowTopLeftCorner, optionsWindowDimensions, fontObserver);
     }
 
     private void updateWindowDimensions() {
@@ -73,12 +75,12 @@ public class Game {
         float gameButtonsHeight = height * 0.20f;
         Vec2D gameButtonDimensions = new Vec2D(gameButtonsWidth, gameButtonsHeight);
 
+        fontObserver.resetSize();
         for (int i = 0; i < GameButtonType.values().length - 1; i++) {
             Vec2D topLeftCorner = new Vec2D(gameButtonsStartX, gameButtonsStartY + (i * gameButtonsHeight));
             this.gameButtons[i].setTopLeftCorner(topLeftCorner);
             this.gameButtons[i].setDimensions(gameButtonDimensions);
         }
-        utilities.windowDimensions = windowDimensions[windowDimensionsPivot];
 
         float optionsWindowWidth = width * 1.5f;
         float optionsWindowHeight = height * 1.2f;

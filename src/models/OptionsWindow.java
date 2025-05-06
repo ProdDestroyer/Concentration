@@ -10,18 +10,24 @@ public class OptionsWindow {
     private OptionsImage bottomWoodenDivisionImage;
     private OptionsImage upperWoodenDivisionImage;
     private OptionsSpinner windowDimensionsSpinner;
+    private OptionsWindowButton dimensionsLabel;
     private ImageButton confirmButton;
     private ImageButton cancelButton;
-    private GameMode gameMode;
+    private FontObserver  fontObserver;
     private static final String OPTIONS_WINDOW_BACKGROUND_IMAGE_PATH = "/img/OptionsWindowBackground.png";
     private static final String OPTIONS_WINDOW_WOOD_DIVISION_IMAGE_PATH = "/img/WoodenBorder.png";
 
-    public OptionsWindow(Vec2D topLeftCorner, Vec2D dimensions) {
+    public OptionsWindow(Vec2D topLeftCorner, Vec2D dimensions, FontObserver fontObserver) {
+        this.fontObserver = fontObserver;
+        fontObserver.addoptionsWindowButton(gameButton);
+        fontObserver.addoptionsWindowButton(graphicsButton);
         this.topLeftCorner = topLeftCorner;
         this.dimensions = dimensions;
-        Vec2D innerButtonsTopLeftCorner = new Vec2D(topLeftCorner.x + dimensions.x - dimensions.x * 0.275f, topLeftCorner.y + dimensions.y * 0.1f);
+        Vec2D innerButtonsTopLeftCorner = new Vec2D(topLeftCorner.x + dimensions.x * 0.725f, topLeftCorner.y + dimensions.y * 0.1f);
         Vec2D innerButtonsDimensions = new Vec2D(dimensions.x * 0.225f, dimensions.y * 0.075f);
         this.windowDimensionsSpinner = new OptionsSpinner(innerButtonsTopLeftCorner, innerButtonsDimensions, "1920x1080");
+        Vec2D innerLabelsTopLeftCorner = new Vec2D(topLeftCorner.x + dimensions.x * 0.375f, topLeftCorner.y + dimensions.y * 0.1f);
+        dimensionsLabel = new OptionsWindowButton(innerLabelsTopLeftCorner, innerButtonsDimensions, "Window Size", null);
         initWoodenDivisionForGraphics();
         initOptionsWindowBackgroundImage();
         initButtons();
@@ -32,6 +38,10 @@ public class OptionsWindow {
         Vec2D innerButtonsDimensions = new Vec2D(dimensions.x * 0.225f, dimensions.y * 0.075f);
         windowDimensionsSpinner.setTopLeftCorner(innerButtonsTopLeftCorner);
         windowDimensionsSpinner.setDimensions(innerButtonsDimensions);
+
+        Vec2D innerLabelsTopLeftCorner = new Vec2D(topLeftCorner.x + dimensions.x * 0.375f, topLeftCorner.y + dimensions.y * 0.1f);
+        dimensionsLabel.setTopLeftCorner(innerLabelsTopLeftCorner);
+        dimensionsLabel.setDimensions(innerButtonsDimensions);;
 
         Vec2D buttonsTopLeftCorner = new Vec2D(topLeftCorner.x + dimensions.x * 0.04f, topLeftCorner.y + dimensions.y * 0.05f);
         Vec2D buttonsDimensions = new Vec2D(dimensions.x * 0.25f, dimensions.y * 0.15f);
@@ -84,8 +94,8 @@ public class OptionsWindow {
     private void initButtons() {
         Vec2D buttonsTopLeftCorner = new Vec2D(topLeftCorner.x + dimensions.x * 0.04f, topLeftCorner.y + dimensions.y * 0.05f);
         Vec2D buttonsDimension = new Vec2D(dimensions.x * 0.25f, dimensions.y * 0.15f);
-        graphicsButton = new OptionsWindowButton(buttonsTopLeftCorner, buttonsDimension, "GRAPHICS");
-        gameButton = new OptionsWindowButton(new Vec2D(buttonsTopLeftCorner.x, buttonsTopLeftCorner.y + buttonsDimension.y), buttonsDimension, "GAME");
+        graphicsButton = new OptionsWindowButton(buttonsTopLeftCorner, buttonsDimension, "GRAPHICS", fontObserver);
+        gameButton = new OptionsWindowButton(new Vec2D(buttonsTopLeftCorner.x, buttonsTopLeftCorner.y + buttonsDimension.y), buttonsDimension, "GAME", fontObserver);
 
         Vec2D panelButtonsTopLeftCorner = new Vec2D(topLeftCorner.x + 0.9f * dimensions.x, topLeftCorner.y);
         Vec2D panelButtonsDimensions = new Vec2D(0.05f * dimensions.x, dimensions.y * 0.075f);
@@ -95,10 +105,6 @@ public class OptionsWindow {
 
     private void initOptionsWindowBackgroundImage() {
         this.optionsWindowImage = new OptionsImage(OPTIONS_WINDOW_BACKGROUND_IMAGE_PATH, null, topLeftCorner, dimensions);
-    }
-
-    public void setGameMode(GameMode gameMode) {
-        this.gameMode = gameMode;
     }
 
     public Vec2D getDimensions() {
@@ -153,6 +159,10 @@ public class OptionsWindow {
 
     public ImageButton getCancelButton() {
         return cancelButton;
+    }
+
+    public OptionsWindowButton getDimensionsLabel() {
+        return dimensionsLabel;
     }
 
 }

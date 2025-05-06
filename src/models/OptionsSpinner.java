@@ -17,10 +17,10 @@ public class OptionsSpinner {
     }
 
     private void initButtons() {
-        decreaseButton = new OptionsWindowButton(topLeftCorner, new Vec2D(dimensions.x * 0.15f, dimensions.y), "<");
-        increaseButton = new OptionsWindowButton(new Vec2D(topLeftCorner.x + dimensions.x * 0.85f, topLeftCorner.y), new Vec2D(dimensions.x * 0.15f, dimensions.y), ">");
+        decreaseButton = new OptionsWindowButton(topLeftCorner, new Vec2D(dimensions.x * 0.15f, dimensions.y), "<", null);
+        increaseButton = new OptionsWindowButton(new Vec2D(topLeftCorner.x + dimensions.x * 0.85f, topLeftCorner.y), new Vec2D(dimensions.x * 0.15f, dimensions.y), ">", null);
         valueButton = new OptionsWindowButton(new Vec2D(topLeftCorner.x + dimensions.x * 0.15f, topLeftCorner .y), new Vec2D(dimensions.x * 0.70f, dimensions.y),
-                value);
+                value, null);
     }
 
     private void resetButtons() {

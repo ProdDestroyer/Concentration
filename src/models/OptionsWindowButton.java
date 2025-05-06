@@ -17,9 +17,11 @@ public class OptionsWindowButton {
     private boolean fontSizeCalculated;
     private Rectangle2D fontRectangle2d;
     private boolean hovered;
+    private FontObserver fontObserver;
     private static final String GAME_BUTTON_FONT_PATH = "/fonts/jungle-adventurer/JungleAdventurer.ttf";
 
-    public OptionsWindowButton(Vec2D topLeftCorner, Vec2D dimensions, String text) {
+    public OptionsWindowButton(Vec2D topLeftCorner, Vec2D dimensions, String text, FontObserver fontObserver) {
+        this.fontObserver = fontObserver;
         this.topLeftCorner = topLeftCorner;
         this.dimensions = dimensions;
         this.text = text;
@@ -40,20 +42,31 @@ public class OptionsWindowButton {
             float fontSize = 100f;
             font = font.deriveFont(fontSize);
             Rectangle2D fontRect = font.getStringBounds(text, frc);
-            float fontWidth = (float)fontRect.getWidth();
-            float fontHeight = (float)fontRect.getHeight();
+            float fontWidth = (float) fontRect.getWidth();
+            float fontHeight = (float) fontRect.getHeight();
 
-            while (fontWidth > dimensions.x || fontHeight > dimensions.y) {
+            while (fontWidth > dimensions.x * 0.85 || fontHeight > dimensions.y) {
                 fontSize -= 1.0f;
                 font = font.deriveFont(fontSize);
                 fontRect = font.getStringBounds(text, frc);
-                fontWidth = (float)fontRect.getWidth();
-                fontHeight = (float)fontRect.getHeight();
+                fontWidth = (float) fontRect.getWidth();
+                fontHeight = (float) fontRect.getHeight();
             }
             fontRectangle2d = fontRect;
             fontSizeCalculated = true;
+            if (fontObserver != null) {
+                if (font.getSize() < fontObserver.getCustomButtonsMinFontSize()) {
+                    fontObserver.setCustomButtonsMinFontSize(font.getSize());
+                } else {
+                    resizeFont(fontObserver.getCustomButtonsMinFontSize());
+                }
+            }
         }
         return font;
+    }
+
+    public void resizeFont(float size) {
+        font = font.deriveFont(size);
     }
 
     public Vec2D getTextCoords(FontRenderContext frc) {
@@ -71,8 +84,8 @@ public class OptionsWindowButton {
                 buttonYCenter + (ascent - descent) / 2.0f);
     }
 
-    public boolean isContained( Vec2D coords) {
-        Rectangle2D buttonRect = new Rectangle((int)topLeftCorner.x, (int)topLeftCorner.y, (int)dimensions.x, (int)dimensions.y);
+    public boolean isContained(Vec2D coords) {
+        Rectangle2D buttonRect = new Rectangle((int) topLeftCorner.x, (int) topLeftCorner.y, (int) dimensions.x, (int) dimensions.y);
         return hovered = buttonRect.contains(coords.x, coords.y);
     }
 
@@ -99,6 +112,7 @@ public class OptionsWindowButton {
     public void setTopLeftCorner(Vec2D topLeftCorner) {
         this.topLeftCorner = topLeftCorner;
     }
+
     public void setDimensions(Vec2D dimensions) {
         this.dimensions = dimensions;
         fontSizeCalculated = false;

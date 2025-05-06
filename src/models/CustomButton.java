@@ -24,11 +24,14 @@ public class CustomButton {
     private boolean hovered;
     private Rectangle2D fontRectangle2d;
     private GameButtonType gameButtonType;
+    private FontObserver fontObserver;
     private static final String GAME_BUTTON_IMAGE_PATH = "/img/ButtonBackground.png";
     private static final String GAME_HOVERED_BUTTON_IMAGE_PATH = "/img/HoveredButtonBackground.png";
     private static final String GAME_BUTTON_FONT_PATH = "/fonts/rebellion-squad-font/RebellionSquad-ZpprZ.ttf";
 
-    public CustomButton(Vec2D topLeftCorner, Vec2D dimensions, GameButtonType gameButtonType) {
+    public CustomButton(Vec2D topLeftCorner, Vec2D dimensions, GameButtonType gameButtonType, FontObserver fontObserver) {
+        this.fontObserver = fontObserver;
+        this.fontObserver.addCustomButton(this);
         this.topLeftCorner = topLeftCorner;
         this.dimensions = dimensions;
         this.gameButtonType = gameButtonType;
@@ -63,7 +66,8 @@ public class CustomButton {
     }
 
     public boolean isContained(Vec2D coords) {
-        return hovered = coords.x >= topLeftCorner.x && coords.x <= topLeftCorner.x + dimensions.x && coords.y >= topLeftCorner.y && coords.y <= topLeftCorner.y + dimensions.y; 
+        return hovered = coords.x >= topLeftCorner.x && coords.x <= topLeftCorner.x + dimensions.x && coords.y >= topLeftCorner.y
+                && coords.y <= topLeftCorner.y + dimensions.y;
     }
 
     public Font getFont(FontRenderContext frc) {
@@ -71,18 +75,23 @@ public class CustomButton {
             float fontSize = 100f;
             font = font.deriveFont(fontSize);
             Rectangle2D fontRect = font.getStringBounds(text, frc);
-            float fontWidth = (float)fontRect.getWidth();
-            float fontHeight = (float)fontRect.getHeight();
+            float fontWidth = (float) fontRect.getWidth();
+            float fontHeight = (float) fontRect.getHeight();
 
-            while (fontWidth > dimensions.x || fontHeight > dimensions.y) {
+            while (fontWidth > dimensions.x * 0.85 || fontHeight > dimensions.y) {
                 fontSize -= 1.0f;
                 font = font.deriveFont(fontSize);
                 fontRect = font.getStringBounds(text, frc);
-                fontWidth = (float)fontRect.getWidth();
-                fontHeight = (float)fontRect.getHeight();
+                fontWidth = (float) fontRect.getWidth();
+                fontHeight = (float) fontRect.getHeight();
             }
             fontRectangle2d = fontRect;
             fontSizeCalculated = true;
+            if (font.getSize() < fontObserver.getCustomButtonsMinFontSize()) {
+                fontObserver.setCustomButtonsMinFontSize(font.getSize());
+            } else {
+                resizeFont(fontObserver.getCustomButtonsMinFontSize());
+            }
         }
         return font;
     }
@@ -107,7 +116,7 @@ public class CustomButton {
     }
 
     public AffineTransform getAt() {
-        return at; 
+        return at;
     }
 
     public Vec2D getDimensions() {
@@ -138,6 +147,10 @@ public class CustomButton {
 
     public void setTopLeftCorner(Vec2D topLeftCorner) {
         this.topLeftCorner = topLeftCorner;
+    }
+
+    public void resizeFont(float size) {
+        font = font.deriveFont(size);
     }
 
 }

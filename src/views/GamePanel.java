@@ -114,11 +114,14 @@ public class GamePanel extends JPanel {
                 g2.setFont(windowDimensionsValueButton.getFont(g2.getFontRenderContext()));
                 g2.drawString(windowDimensionsValueButton.getText(), windowDimensionsValueButtonTextCoords.x, windowDimensionsValueButtonTextCoords.y);
 
-                Rectangle2D valueRect = game.getOptionsWindow().getWindowDimensionsSpinner().getValueButton().getFontRectangle2d();
                 g2.drawRect((int) game.getOptionsWindow().getWindowDimensionsSpinner().getTopLeftCorner().x,
                         (int) game.getOptionsWindow().getWindowDimensionsSpinner().getTopLeftCorner().y,
                         (int) game.getOptionsWindow().getWindowDimensionsSpinner().getDimensions().x,
                         (int) game.getOptionsWindow().getWindowDimensionsSpinner().getDimensions().y);
+
+                g2.setFont(game.getOptionsWindow().getDimensionsLabel().getFont(g2.getFontRenderContext()));
+                Vec2D dimensionsLabelTextCoords = game.getOptionsWindow().getDimensionsLabel().getTextCoords(g2.getFontRenderContext());
+                g2.drawString(game.getOptionsWindow().getDimensionsLabel().getText(), dimensionsLabelTextCoords.x, dimensionsLabelTextCoords.y);
 
                 break;
             case GAME_SETUP:
@@ -162,8 +165,9 @@ public class GamePanel extends JPanel {
 
     private void paintBackground(Graphics2D g2) {
         g2.drawImage(game.getBackgroundImage(), 0, 0, getWidth(), getHeight(), this);
-        g2.drawImage(game.getFrameImage(), (int) ((game.getUtilities().windowWidth() - game.getUtilities().windowHeight()) / 2.0f), 0, (int)game.getUtilities().windowHeight(),
-                (int)game.getUtilities().windowHeight(), this);
+        g2.drawImage(game.getFrameImage(), (int) ((game.getUtilities().windowWidth() - game.getUtilities().windowHeight()) / 2.0f), 0,
+                (int) game.getUtilities().windowHeight(),
+                (int) game.getUtilities().windowHeight(), this);
     }
 
     private void paintCards(Graphics2D g2) {
