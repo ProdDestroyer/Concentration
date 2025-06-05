@@ -4,6 +4,7 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.nio.Buffer;
 
 public class Card {
 
@@ -13,12 +14,20 @@ public class Card {
     private String cardName;
     private boolean locked;
     private boolean removed;
+    private boolean scoring;
 
     public Card(Vec2D center, Vec2D dimensions, String cardName) {
         this.center = center;
         this.dimensions = dimensions;
         this.cardName = cardName;
         initImage();
+    }
+
+    public Card(Vec2D center, Vec2D dimensions, String cardName, BufferedImage bufferedImage, BufferedImage backImage, BufferedImage hoveredBackImage) {
+        this.center = center;
+        this.dimensions = dimensions;
+        this.cardName = cardName;
+        initImage(bufferedImage, backImage, hoveredBackImage);
     }
 
     public void transform(float dx) {
@@ -29,8 +38,17 @@ public class Card {
         gameImage = new GameImage(cardName, this);
     }
 
+    private void initImage(BufferedImage bufferedImage, BufferedImage backImage, BufferedImage hoveredBackImage) {
+        gameImage = new GameImage(cardName, this, bufferedImage, backImage, hoveredBackImage);
+    }
+
     public int lock() {
-        int lockResult = (locked) ? 1 : 0;
+        int lockResult = 0;
+        if(locked) {
+            lockResult = 1;
+        } else {
+            score();
+        }
         locked = true;
         return lockResult;
     }
@@ -113,5 +131,15 @@ public class Card {
     public void setCenter(Vec2D center) {
         this.center = center;
         transform(0.0f);
+    }
+
+    public void score() {
+        scoring = true;
+    }
+
+    public boolean consumeScore() {
+        boolean result = scoring;
+        scoring = false;
+        return result;
     }
 }

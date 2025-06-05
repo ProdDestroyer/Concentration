@@ -5,13 +5,9 @@ import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.geom.Rectangle2D;
-
 import javax.swing.JPanel;
-
 import models.MouseEngine;
 import models.OptionsWindowButton;
-import models.Utilities;
 import models.Card;
 import models.CustomButton;
 import models.Game;
@@ -50,15 +46,24 @@ public class GamePanel extends JPanel {
         g2.setColor(Color.green);
 
         paintBackground(g2);
-        paintBoard(g2);
         paintCards(g2);
         paintGameButtons(g2);
+        paintScoreBoard(g2);
         if (game.getGameMode() != GameMode.PLAYING) {
             g2.setColor(new Color(0, 0, 0, 150));
             g2.fillRect(0, 0, getWidth(), getHeight());
             g2.setColor(Color.green);
             paintGameOptionsWindow(g2);
         }
+    }
+
+    private void paintScoreBoard(Graphics2D g2) {
+        g2.drawImage(game.getLeftChain().getImage(), game.getLeftChain().getAt(), null);
+        g2.drawImage(game.getRightChain().getImage(), game.getRightChain().getAt(), null);
+        g2.drawImage(game.getScoreBoard().getImage(), game.getScoreBoard().getAt(), null);
+        g2.setFont(game.getScoreBoard().getFont(g2.getFontRenderContext()));
+        Vec2D scoreTextCoords = game.getScoreBoard().getTextCoords(g2.getFontRenderContext());
+        g2.drawString(game.getScoreBoard().getText(), scoreTextCoords.x, scoreTextCoords.y);
     }
 
     private void paintGameOptionsWindow(Graphics2D g2) {
@@ -75,14 +80,14 @@ public class GamePanel extends JPanel {
                 (int) graphicsButton.getDimensions().y);
         g2.setFont(graphicsButton.getFont(g2.getFontRenderContext()));
         Vec2D graphicsButtonTextCoords = graphicsButton.getTextCoords(g2.getFontRenderContext());
-        g2.drawString(graphicsButton.getText(), (int) graphicsButtonTextCoords.x, (int) graphicsButtonTextCoords.y);
+        g2.drawString(graphicsButton.getText(), graphicsButtonTextCoords.x,  graphicsButtonTextCoords.y);
         paintOptionsButtonsHovered(g2, graphicsButton, graphicsButtonTextCoords);
 
         g2.drawRect((int) gameButton.getTopLeftCorner().x, (int) gameButton.getTopLeftCorner().y, (int) gameButton.getDimensions().x,
                 (int) gameButton.getDimensions().y);
         g2.setFont(gameButton.getFont(g2.getFontRenderContext()));
         Vec2D gameButtonTextCoords = gameButton.getTextCoords(g2.getFontRenderContext());
-        g2.drawString(gameButton.getText(), (int) gameButtonTextCoords.x, (int) gameButtonTextCoords.y);
+        g2.drawString(gameButton.getText(), gameButtonTextCoords.x, gameButtonTextCoords.y);
         paintOptionsButtonsHovered(g2, gameButton, gameButtonTextCoords);
         setCursor(new Cursor(game.getOptionsWindow().areButtonsHovered() ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR));
 
@@ -93,7 +98,7 @@ public class GamePanel extends JPanel {
         g2.drawImage(cancelButtonBundle.getImage(), cancelButtonBundle.getAt(), null);
 
         switch (game.getGameMode()) {
-            case GRAPHICS:
+            case GRAPHICS: {
                 OptionsWindowButton windowDimensionsDecreaseButton = game.getOptionsWindow().getWindowDimensionsSpinner().getDecreaseButton();
                 Vec2D windowDimensionsDecreaseButtonTextCoords = windowDimensionsDecreaseButton.getTextCoords(g2.getFontRenderContext());
 
@@ -122,9 +127,38 @@ public class GamePanel extends JPanel {
                 g2.setFont(game.getOptionsWindow().getDimensionsLabel().getFont(g2.getFontRenderContext()));
                 Vec2D dimensionsLabelTextCoords = game.getOptionsWindow().getDimensionsLabel().getTextCoords(g2.getFontRenderContext());
                 g2.drawString(game.getOptionsWindow().getDimensionsLabel().getText(), dimensionsLabelTextCoords.x, dimensionsLabelTextCoords.y);
-
+            }
                 break;
-            case GAME_SETUP:
+            case GAME_SETUP: {
+                OptionsWindowButton windowDimensionsDecreaseButton = game.getOptionsWindow().getTilesDimensionsSpinner().getDecreaseButton();
+                Vec2D windowDimensionsDecreaseButtonTextCoords = windowDimensionsDecreaseButton.getTextCoords(g2.getFontRenderContext());
+
+                OptionsWindowButton windowDimensionsIncreaseButton = game.getOptionsWindow().getTilesDimensionsSpinner().getIncreaseButton();
+                Vec2D windowDimensionsIncreaseButtonTextCoords = windowDimensionsIncreaseButton.getTextCoords(g2.getFontRenderContext());
+
+                OptionsWindowButton windowDimensionsValueButton = game.getOptionsWindow().getTilesDimensionsSpinner().getValueButton();
+                Vec2D windowDimensionsValueButtonTextCoords = windowDimensionsValueButton.getTextCoords(g2.getFontRenderContext());
+
+                g2.setFont(windowDimensionsDecreaseButton.getFont(g2.getFontRenderContext()));
+                g2.drawString(windowDimensionsDecreaseButton.getText(), windowDimensionsDecreaseButtonTextCoords.x, windowDimensionsDecreaseButtonTextCoords.y);
+                paintOptionsButtonsHovered(g2, windowDimensionsDecreaseButton, windowDimensionsDecreaseButtonTextCoords);
+
+                g2.setFont(windowDimensionsIncreaseButton.getFont(g2.getFontRenderContext()));
+                g2.drawString(windowDimensionsIncreaseButton.getText(), windowDimensionsIncreaseButtonTextCoords.x, windowDimensionsIncreaseButtonTextCoords.y);
+                paintOptionsButtonsHovered(g2, windowDimensionsIncreaseButton, windowDimensionsIncreaseButtonTextCoords);
+
+                g2.setFont(windowDimensionsValueButton.getFont(g2.getFontRenderContext()));
+                g2.drawString(windowDimensionsValueButton.getText(), windowDimensionsValueButtonTextCoords.x, windowDimensionsValueButtonTextCoords.y);
+
+                g2.drawRect((int) game.getOptionsWindow().getTilesDimensionsSpinner().getTopLeftCorner().x,
+                        (int) game.getOptionsWindow().getTilesDimensionsSpinner().getTopLeftCorner().y,
+                        (int) game.getOptionsWindow().getTilesDimensionsSpinner().getDimensions().x,
+                        (int) game.getOptionsWindow().getTilesDimensionsSpinner().getDimensions().y);
+
+                g2.setFont(game.getOptionsWindow().getTilesDimensionsLabel().getFont(g2.getFontRenderContext()));
+                Vec2D dimensionsLabelTextCoords = game.getOptionsWindow().getTilesDimensionsLabel().getTextCoords(g2.getFontRenderContext());
+                g2.drawString(game.getOptionsWindow().getTilesDimensionsLabel().getText(), dimensionsLabelTextCoords.x, dimensionsLabelTextCoords.y);
+            }
                 break;
             case LOAD:
                 break;
@@ -173,17 +207,10 @@ public class GamePanel extends JPanel {
     private void paintCards(Graphics2D g2) {
         for (Card card : game.getBoard().getCards()) {
             g2.drawImage(card.getImage(), card.getAffineTransform(), null);
-            Rectangle2D cardRect = card.getTargetRectangle();
-            g2.drawRect((int) cardRect.getX(), (int) cardRect.getY(), (int) cardRect.getWidth(), (int) cardRect.getHeight());
+            // Rectangle2D cardRect = card.getTargetRectangle();
+            // g2.drawRect((int) cardRect.getX(), (int) cardRect.getY(), (int)
+            // cardRect.getWidth(), (int) cardRect.getHeight());
         }
-    }
-
-    private void paintBoard(Graphics2D g2) {
-        g2.setColor(Color.green);
-        Vec2D topLeftCorner = game.getBoard().getTopLeftCorner();
-        Vec2D dimensions = game.getBoard().getDimensions();
-        g2.drawRect((int) topLeftCorner.getX(), (int) topLeftCorner.getY(), (int) dimensions.getX(),
-                (int) dimensions.getY());
     }
 
 }

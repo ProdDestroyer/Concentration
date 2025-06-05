@@ -11,9 +11,11 @@ public class OptionsWindow {
     private OptionsImage upperWoodenDivisionImage;
     private OptionsSpinner windowDimensionsSpinner;
     private OptionsWindowButton dimensionsLabel;
+    private OptionsSpinner tilesDimensionsSpinner;
+    private OptionsWindowButton tilesDimensionsLabel;
     private ImageButton confirmButton;
     private ImageButton cancelButton;
-    private FontObserver  fontObserver;
+    private FontObserver fontObserver;
     private static final String OPTIONS_WINDOW_BACKGROUND_IMAGE_PATH = "/img/OptionsWindowBackground.png";
     private static final String OPTIONS_WINDOW_WOOD_DIVISION_IMAGE_PATH = "/img/WoodenBorder.png";
 
@@ -27,7 +29,9 @@ public class OptionsWindow {
         Vec2D innerButtonsDimensions = new Vec2D(dimensions.x * 0.225f, dimensions.y * 0.075f);
         this.windowDimensionsSpinner = new OptionsSpinner(innerButtonsTopLeftCorner, innerButtonsDimensions, "1920x1080");
         Vec2D innerLabelsTopLeftCorner = new Vec2D(topLeftCorner.x + dimensions.x * 0.375f, topLeftCorner.y + dimensions.y * 0.1f);
-        dimensionsLabel = new OptionsWindowButton(innerLabelsTopLeftCorner, innerButtonsDimensions, "Window Size", null);
+        this.dimensionsLabel = new OptionsWindowButton(innerLabelsTopLeftCorner, innerButtonsDimensions, "Window Size", null);
+        this.tilesDimensionsLabel = new OptionsWindowButton(innerLabelsTopLeftCorner, innerButtonsDimensions, "Tiles Dimensions", null);
+        this.tilesDimensionsSpinner = new OptionsSpinner(innerButtonsTopLeftCorner, innerButtonsDimensions, "4 x 4");
         initWoodenDivisionForGraphics();
         initOptionsWindowBackgroundImage();
         initButtons();
@@ -38,10 +42,14 @@ public class OptionsWindow {
         Vec2D innerButtonsDimensions = new Vec2D(dimensions.x * 0.225f, dimensions.y * 0.075f);
         windowDimensionsSpinner.setTopLeftCorner(innerButtonsTopLeftCorner);
         windowDimensionsSpinner.setDimensions(innerButtonsDimensions);
+        tilesDimensionsSpinner.setTopLeftCorner(innerButtonsTopLeftCorner);
+        tilesDimensionsSpinner.setDimensions(innerButtonsDimensions);
 
         Vec2D innerLabelsTopLeftCorner = new Vec2D(topLeftCorner.x + dimensions.x * 0.375f, topLeftCorner.y + dimensions.y * 0.1f);
         dimensionsLabel.setTopLeftCorner(innerLabelsTopLeftCorner);
-        dimensionsLabel.setDimensions(innerButtonsDimensions);;
+        dimensionsLabel.setDimensions(innerButtonsDimensions);
+        tilesDimensionsLabel.setTopLeftCorner(innerLabelsTopLeftCorner);
+        tilesDimensionsLabel.setDimensions(innerButtonsDimensions);
 
         Vec2D buttonsTopLeftCorner = new Vec2D(topLeftCorner.x + dimensions.x * 0.04f, topLeftCorner.y + dimensions.y * 0.05f);
         Vec2D buttonsDimensions = new Vec2D(dimensions.x * 0.25f, dimensions.y * 0.15f);
@@ -54,7 +62,7 @@ public class OptionsWindow {
         optionsWindowImage.initBackgroundImage(OPTIONS_WINDOW_BACKGROUND_IMAGE_PATH);
         initWoodenDivisionForGraphics();
 
-        //ControlButtons
+        // ControlButtons
         Vec2D panelButtonsTopLeftCorner = new Vec2D(topLeftCorner.x + 0.9f * dimensions.x, topLeftCorner.y);
         Vec2D panelButtonsDimensions = new Vec2D(0.05f * dimensions.x, dimensions.y * 0.075f);
         confirmButton.setTopLeftCorner(panelButtonsTopLeftCorner);
@@ -95,12 +103,14 @@ public class OptionsWindow {
         Vec2D buttonsTopLeftCorner = new Vec2D(topLeftCorner.x + dimensions.x * 0.04f, topLeftCorner.y + dimensions.y * 0.05f);
         Vec2D buttonsDimension = new Vec2D(dimensions.x * 0.25f, dimensions.y * 0.15f);
         graphicsButton = new OptionsWindowButton(buttonsTopLeftCorner, buttonsDimension, "GRAPHICS", fontObserver);
-        gameButton = new OptionsWindowButton(new Vec2D(buttonsTopLeftCorner.x, buttonsTopLeftCorner.y + buttonsDimension.y), buttonsDimension, "GAME", fontObserver);
+        gameButton = new OptionsWindowButton(new Vec2D(buttonsTopLeftCorner.x, buttonsTopLeftCorner.y + buttonsDimension.y), buttonsDimension, "GAME",
+                fontObserver);
 
         Vec2D panelButtonsTopLeftCorner = new Vec2D(topLeftCorner.x + 0.9f * dimensions.x, topLeftCorner.y);
         Vec2D panelButtonsDimensions = new Vec2D(0.05f * dimensions.x, dimensions.y * 0.075f);
         confirmButton = new ImageButton(panelButtonsTopLeftCorner, panelButtonsDimensions, "/img/ConfirmButton.png", "/img/HoveredConfirmButton.png", null);
-        cancelButton = new ImageButton(new Vec2D(panelButtonsTopLeftCorner.x + dimensions.x * 0.05f, topLeftCorner.y), panelButtonsDimensions, "/img/CancelButton.png", "/img/HoveredCancelButton.png", null);
+        cancelButton = new ImageButton(new Vec2D(panelButtonsTopLeftCorner.x + dimensions.x * 0.05f, topLeftCorner.y), panelButtonsDimensions,
+                "/img/CancelButton.png", "/img/HoveredCancelButton.png", null);
     }
 
     private void initOptionsWindowBackgroundImage() {
@@ -163,6 +173,14 @@ public class OptionsWindow {
 
     public OptionsWindowButton getDimensionsLabel() {
         return dimensionsLabel;
+    }
+
+    public OptionsWindowButton getTilesDimensionsLabel() {
+        return tilesDimensionsLabel;
+    }
+
+    public OptionsSpinner getTilesDimensionsSpinner() {
+        return tilesDimensionsSpinner;
     }
 
 }

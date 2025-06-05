@@ -1,5 +1,6 @@
 package models;
 
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 public class Board {
@@ -13,6 +14,7 @@ public class Board {
     private HashMap<Integer, String> animalsImagesMap;
     private float cardWidth;
     private float cardHeight;
+    private int score;
     private static final int MATH_KEY = 43;
 
     public Board(Vec2D topLeftCorner, Vec2D dimensions, int widthInTiles, int heightInTiles) {
@@ -44,16 +46,19 @@ public class Board {
         animalsImagesMap.put(11, "ElephantCard.png");
 
         this.cards = new Card[areaInTiles];
-
+        BufferedImage backImage;
+        BufferedImage hoveredBackImage;
         for(int i = 0; i < areaInTiles / 2; i++) {
 
-            initCard(i);
+            Card pivotCard = initCard(i);
+            backImage = pivotCard.getGameImage().getBackImage();
+            hoveredBackImage = pivotCard.getGameImage().getHoveredBackImage();
 
-            initCard(i);
+            initSecondCard(i, pivotCard.getGameImage().getIconImage(), backImage, hoveredBackImage);
         }
     }
 
-    private void initCard(int i) {
+    private Card initCard(int i) {
         int cardIndex;
         do {
             cardIndex = (int)(Math.random() * this.cards.length);
@@ -69,6 +74,25 @@ public class Board {
 
         Vec2D center = new Vec2D(xCenter, yCenter);
         this.cards[cardIndex] = new Card(center, new Vec2D(cardWidth, cardHeight), animalsImagesMap.get(i % 12));
+        return this.cards[cardIndex];
+    }
+
+    private void initSecondCard(int i, BufferedImage bufferedImage, BufferedImage backImage, BufferedImage hoveredBackImage) {
+        int cardIndex;
+        do {
+            cardIndex = (int)(Math.random() * this.cards.length);
+        }
+        while(this.cards[cardIndex] != null);
+        
+        Vec2D coord2D = translateTo2DCoords(cardIndex, widthInTiles, heightInTiles);
+
+        int x = (int) coord2D.getX();
+        int y = (int) coord2D.getY();
+        float xCenter = topLeftCorner.getX() + cardWidth / 2.0f + (x * cardWidth);
+        float yCenter = topLeftCorner.getY() + cardHeight / 2.0f + (y * cardHeight);
+
+        Vec2D center = new Vec2D(xCenter, yCenter);
+        this.cards[cardIndex] = new Card(center, new Vec2D(cardWidth, cardHeight), animalsImagesMap.get(i % 12), bufferedImage, backImage, hoveredBackImage);
     }
 
     private void resetCard(int i) {
@@ -127,8 +151,10 @@ public class Board {
                 cards[secondIndex].cover();
             }
         }
+
         for (Card card : cards) {
             card.transform(dt);
+            score += card.consumeScore() ?  1 : 0;
         }
         return refreshResult;
     }
@@ -186,5 +212,9 @@ public class Board {
         for (int i = 0; i < cards.length; i++) {
             resetCard(i);
         }
+    }
+
+    public int getScore() {
+        return score;
     }
 }

@@ -27,7 +27,7 @@ public class GameImage {
     public GameImage(String imgFileName, Card parentCard) {
         shearX = 0.9f;
         shearXDelta = -0.05f;
-        this.parentCard = parentCard;
+        this.parentCard = parentCard; 
         try {
             iconImage = ImageIO.read(getClass().getResource(IMAGES_FOLDER_PATH + imgFileName));
             backImage = ImageIO.read(getClass().getResource(IMAGES_FOLDER_PATH + "BackSideCard.png"));
@@ -35,6 +35,16 @@ public class GameImage {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        at = new AffineTransform();
+    }
+    
+    public GameImage(String imgFileName, Card parentCard, BufferedImage iconImage, BufferedImage backImage, BufferedImage hoveredBackImage) {
+        shearX = 0.9f;
+        shearXDelta = -0.05f;
+        this.parentCard = parentCard; 
+        this.iconImage = iconImage;
+        this.backImage = backImage;
+        this.hoveredBackImage = hoveredBackImage;
         at = new AffineTransform();
     }
 
@@ -122,7 +132,8 @@ public class GameImage {
     }
 
     public BufferedImage getImage() {
-        return (removed) ? null : (iconShown || (revealed && !covering)) ? iconImage : (!hovered) ? backImage : (!parentCard.isLocked()) ? hoveredBackImage : backImage;
+        return (removed) ? null
+                : (iconShown || (revealed && !covering)) ? iconImage : (!hovered) ? backImage : (!parentCard.isLocked()) ? hoveredBackImage : backImage;
     }
 
     public AffineTransform getAffineTransform() {
@@ -155,5 +166,17 @@ public class GameImage {
 
     public boolean isHovered() {
         return hovered;
+    }
+
+    public BufferedImage getIconImage() {
+        return iconImage;
+    }
+
+    public BufferedImage getHoveredBackImage() {
+        return hoveredBackImage;
+    }
+
+    public BufferedImage getBackImage() {
+        return backImage;
     }
 }
